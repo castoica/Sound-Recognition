@@ -2,14 +2,19 @@ package com.Helpers;
 
 import java.awt.Component;
 import java.io.File;
+import java.io.IOException;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.JFileChooser;
 
 public class Sampler {
 	private File file = null;
 	private final JFileChooser fileChooser = new JFileChooser();
+	private AudioInputStream audioInputStream = null;
+	private Clip clip = null;
 	
 	
 	public Sampler(String path){
@@ -21,9 +26,7 @@ public class Sampler {
 	
 	public void readAudioBytes(){
 		int totalFramesRead = 0;
-		try{
-			AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(this.file);
-			int bytesPerFrame = audioInputStream.getFormat().getFrameSize();
+			int bytesPerFrame = this.audioInputStream.getFormat().getFrameSize();
 			if(bytesPerFrame == AudioSystem.NOT_SPECIFIED){
 				bytesPerFrame = 1;
 			}
@@ -48,15 +51,40 @@ public class Sampler {
 			}catch(Exception ex){
 				
 			}
+
 			
-		}catch(Exception e){
-			
-		}
+		
 	}
 	
 	public void pickFile(){
-		Component comp = null;
-		fileChooser.showOpenDialog(comp);
+		fileChooser.showOpenDialog(null);
 		this.file = fileChooser.getSelectedFile();
+		try{
+		this.audioInputStream = AudioSystem.getAudioInputStream(this.file);
+		this.clip = AudioSystem.getClip();
+		this.clip.open(this.audioInputStream);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public void play(){
+		try{
+		this.clip.loop(Clip.LOOP_CONTINUOUSLY);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
+	public String getFileName(){
+		return this.file.getName();
+	}
+
+	public void stop(){
+		try{
+			this.clip.stop();
+		}catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 }
