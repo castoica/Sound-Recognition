@@ -1,0 +1,8 @@
+package Helpers;
+
+public class test {
+	public static void main(String args[]){
+		Sampler sampler = new Sampler("C:\\Users\\Catalin\\Downloads\\Yamaha-TG100-Whistle-C5.wav");
+		
+	}
+}
